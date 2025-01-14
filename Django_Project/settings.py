@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'OmarTime.urls'
+ROOT_URLCONF = 'Django_Project.urls'
 
 TEMPLATES = [
     {
@@ -74,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'OmarTime.wsgi.application'
+WSGI_APPLICATION = 'Django_Project.wsgi.application'
 
 
 # Database

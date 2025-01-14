@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'OmarTime.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Django_Project.settings')
 
 application = get_wsgi_application()
