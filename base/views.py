@@ -83,7 +83,7 @@ def home(request):
     if page_num <= pages.num_pages and page_num > 0:
         posts_page = pages.page(page_num) 
     else:
-        return HttpResponse('You fuckin monkey')
+        return HttpResponse('Out of Index')
 
     query = ' '.join(q)
     return render(request, 'base/home.html', {'posts_page': posts_page, 'tags': tags, 'users':users, 'query': query, 'page_num': page_num, 'sort_by': sort_by})
@@ -104,7 +104,7 @@ def users(request):
     if page_num <= pages.num_pages and page_num > 0:
         users_page = pages.page(page_num)
     else:
-        return HttpResponse('You fuckin monkey')
+        return HttpResponse('Out of Index')
 
     return render(request, 'base/users.html', {'users_page': users_page, 'page_num':page_num, 'query': q})
 
@@ -114,7 +114,7 @@ def followers(request, username, page):
     q = request.GET.get('q', '')
 
     if not user:
-        return HttpResponse("This User doesn't exist, donkey")
+        return HttpResponse("This User doesn't exist")
 
     if q and (not q.isspace()):
         if page == 'followers':
@@ -137,7 +137,7 @@ def followers(request, username, page):
     if page_num <= pages.num_pages and page_num > 0:
         users_page = pages.page(page_num)
     else:
-        return HttpResponse("This page index doesn't exist, monkey")
+        return HttpResponse("This page index doesn't exist")
 
     return render(request, 'base/users.html', {'users_page': users_page, 'page_num':page_num})
 
@@ -174,7 +174,7 @@ def tags(request):
     if page_num <= pages.num_pages and page_num > 0:
         tags_page = pages.page(page_num)
     else:
-        return HttpResponse('You fuckin monkey')
+        return HttpResponse('Out of Index')
     
     return render(request, 'base/tags.html', {'tags_page': tags_page, 'query': query, 'page_num': page_num, 'sort_by': sort_by})
 
@@ -183,7 +183,7 @@ def profile(request, username):
 
     user = User.objects.filter(username=username).first()
     if not user:
-        return HttpResponse('This User doesnt exist, you fucking monkey')
+        return HttpResponse('This User doesnt exist')
 
     posts = Post.objects.filter(user=user).order_by('-created')
 
@@ -225,7 +225,7 @@ def register_user(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Something went wrong brudda')
+            messages.error(request, 'Something went wrong')
 
 
     user_form = RegistrationForm()
@@ -255,7 +255,7 @@ def edit_password(request):
             update_session_auth_hash(request, form.user)
             return redirect('profile', request.user)
         else:
-            messages.error(request, 'Seomthing went wrong, brudda(maybe the passwords be incorrect)')
+            messages.error(request, 'Something went wrong(maybe the passwords is incorrect)')
 
     form = PasswordChangeForm(user = request.user)
     return render(request, 'base/edit_password.html', {'form': form})
@@ -273,7 +273,7 @@ def dfs(comment, queryset):
 def post(request, pk):
     post = Post.objects.filter(id=pk).first()
     if not post:
-        return HttpResponse('This Post doesnt exist, you fucking monkey')
+        return HttpResponse('This Post doesnt exist')
 
     root_comments = post.comment_set.filter(parent=None).order_by('-created').distinct('created', 'id')
     comments = []
@@ -303,7 +303,7 @@ def reply(request, post_pk, comment_pk):
     body = request.POST.get('reply', '')
     
     if not (post and comment and body):
-        return HttpResponse('The post or comment you are trying to respond to does not exist, donkey. Either that or you didnt write anything in the reply, donkey.')
+        return HttpResponse('The post or comment you are trying to respond to does not exist. Either that or you didnt write anything in the reply.')
 
     depth = comment.depth + '1'
 
@@ -350,9 +350,9 @@ def edit_post(request, pk):
     post = Post.objects.filter(id=pk).first()
 
     if not post:
-        return HttpResponse('The post you are trying to edit does not exist, monkey')
+        return HttpResponse('The post you are trying to edit does not exist')
     if request.user != post.user:
-        return HttpResponse('Dafuq you doing here?!?!')
+        return HttpResponse('You do not have permission to edit this post.')
 
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
@@ -385,9 +385,9 @@ def delete(request, pk, obj):
         obj = Comment.objects.filter(id=pk).first()
         
     if not obj:
-        return HttpResponse('This thing you are tring to delete does not exist, donkey')
+        return HttpResponse('This thing you are tring to delete does not exist.')
     if request.user != obj.user:
-        return HttpResponse('Wtf are you doing here?')
+        return HttpResponse('You do not have permission to delete this post.')
     
     if request.method == 'POST':
         if isinstance(obj, Post):
@@ -407,7 +407,7 @@ def favorite(request, pk):
     post = Post.objects.filter(id=pk).first()
 
     if not post:
-        return HttpResponse('This thing you are trying to favorite does not exist, donkey')
+        return HttpResponse('This thing you are trying to favorite does not exist.')
 
     if post.favorites.filter(username=request.user.username).exists():
         post.favorites.remove(request.user)
@@ -426,7 +426,7 @@ def like(request, pk, obj):
         post = obj.post
 
     if not obj:
-        return HttpResponse('This thing you are trying to like does not exist, donkey')
+        return HttpResponse('This thing you are trying to like does not exist.')
     print(obj)
 
     if obj.likes.filter(username=request.user.username).exists():
@@ -441,7 +441,7 @@ def follow(request, username):
     user = User.objects.filter(username=username).first()
 
     if not user:
-        return HttpResponse('The User you are trying to follow does not exist, donkey')
+        return HttpResponse('The User you are trying to follow does not exist.')
 
     if request.user.profile.following.filter(username=user.username).exists():
         request.user.profile.following.remove(user)
